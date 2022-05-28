@@ -1,6 +1,8 @@
 import { CreateCityController } from "@modules/cities/useCases/CreateCity/CreateCityController";
 import { ListCitiesController } from "@modules/cities/useCases/ListCities/ListCitiesController";
 import { SearchCitiesController } from "@modules/cities/useCases/SearchCities/SearchCitiesController";
+import { SearchCitiesByNameController } from "@modules/cities/useCases/SearchCitiesByName/SearchCitiesByNameController";
+import { SearchCitiesByStateController } from "@modules/cities/useCases/SearchCitiesByState/SearchCitiesByStateController";
 import { Router } from "express";
 import { body } from "express-validator";
 
@@ -9,6 +11,8 @@ const citiesRoutes = Router();
 const createCityController = new CreateCityController();
 const listCitiesController = new ListCitiesController();
 const searchCitiesController = new SearchCitiesController();
+const searchCitiesByNameController = new SearchCitiesByNameController();
+const searchCitiesByStateController = new SearchCitiesByStateController();
 
 citiesRoutes.post("/", 
 body("name")
@@ -27,5 +31,7 @@ body("state")
 
 citiesRoutes.get("/", listCitiesController.handle);
 citiesRoutes.get("/search", searchCitiesController.handle);
+citiesRoutes.get("/searchByName", searchCitiesByNameController.handle);
+citiesRoutes.get("/searchByState", searchCitiesByStateController.handle);
 
 export { citiesRoutes };

@@ -1,4 +1,7 @@
 import { ICreateCityDTO } from "@modules/cities/dto/ICreateCityDTO";
+import { ISearchByNameAndStateDTO } from "@modules/cities/dto/ISearchByNameAndStateDTO";
+import { ISearchByNameDTO } from "@modules/cities/dto/ISearchByNameDTO";
+import { ISearchByStateDTO } from "@modules/cities/dto/ISearchByStateDTO";
 import { ISearchCitiesDTO } from "@modules/cities/dto/ISearchCitiesDTO";
 import { ICitiesRepository } from "@modules/cities/repositories/ICitiesRepository";
 import { getRepository, Like, Repository } from "typeorm";
@@ -54,7 +57,10 @@ class CitiesRepository implements ICitiesRepository {
         return cities;
     }
 
-    async searchByNameAndState(name: string, state: string): Promise<City> {
+    async searchByNameAndState({
+        name,
+        state
+    }: ISearchByNameAndStateDTO): Promise<City> {
         const cities = await this.repository.find({
             where: { 
                 name,
@@ -62,8 +68,58 @@ class CitiesRepository implements ICitiesRepository {
             }
         });
 
+        console.log(cities);
+
         if(cities.length)
             return cities[0];
+    }
+
+    async searchByName({
+        name,
+        page,
+        limit,
+    }: ISearchByNameDTO): Promise<City[]> {
+        const nameSanitized = name ? `%${name.toString().toLowerCase()}%` : null;
+
+        const cities = await this.repository.createQueryBuilder('cities')
+            .select([
+                "cities.name",
+                "cities.state"
+            ])
+            .where("LOWER(cities.name) like :name", {
+                name: `%${nameSanitized}%`,
+            })
+            .orderBy("cities.state", "ASC")
+            .orderBy("cities.name", "ASC")
+            .limit(limit)
+            .offset((page - 1) * limit)
+            .getMany();
+
+        return cities;
+    }
+
+    async searchByState({
+        state,
+        page,
+        limit,
+    }: ISearchByStateDTO): Promise<City[]> {
+        const stateSanitized = state ? `%${state.toString().toLowerCase()}%` : null;
+
+        const cities = await this.repository.createQueryBuilder('cities')
+            .select([
+                "cities.name",
+                "cities.state"
+            ])
+            .where("LOWER(cities.state) like :state", {
+                state: `%${stateSanitized}%`,
+            })
+            .orderBy("cities.state", "ASC")
+            .orderBy("cities.name", "ASC")
+            .limit(limit)
+            .offset((page - 1) * limit)
+            .getMany();
+
+        return cities;
     }
 
     async searchAll(): Promise<City[]> {

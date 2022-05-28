@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 import { ICitiesRepository } from "@modules/cities/repositories/ICitiesRepository";
 import { statesList } from "../../../../modules/cities/list/StatesList";
 import { inject, injectable } from "tsyringe";
@@ -19,20 +21,24 @@ class CreateCityUseCase {
         name,
         state
     }: IRequest): Promise<void> {
-        if (!statesList.includes(state))
-            throw new AppError("Sigla do estado não permitido");
+        const stateSanitized = state.toUpperCase();
+
+        if (!statesList.includes(stateSanitized))
+            throw new AppError("State not allowed");
+
+        console.log(stateSanitized);
         
-        let cityAlreadyExists = await this.citiesRepository.findByNameAndState(
+        let cityAlreadyExists = await this.citiesRepository.searchByNameAndState({
             name,
-            state,
-        );
+            state: stateSanitized,
+        });
 
         if (cityAlreadyExists) 
             throw new AppError("Register already exists");
  
         await this.citiesRepository.create({
             name,
-            state,
+            state: stateSanitized,
         });
     }
 }

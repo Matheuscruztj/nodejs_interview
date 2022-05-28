@@ -22,7 +22,7 @@ export class CreateCustomer1653769215045 implements MigrationInterface {
                         enum: ["male", "female"]
                     },
                     {
-                        name: "name",
+                        name: "birth_date",
                         type: "timestamp"
                     },
                     {
