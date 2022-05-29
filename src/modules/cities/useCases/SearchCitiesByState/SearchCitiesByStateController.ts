@@ -9,12 +9,12 @@ class SearchCitiesByStateController {
         const searchCitiesByStateUseCase = container.resolve(SearchCitiesByStateUseCase);
 
         const cities = await searchCitiesByStateUseCase.execute({
-            state: value,
-            page,
-            limit
+            state: value as string,
+            page: page ? parseInt(page as string) : 1,
+            limit: limit ? parseInt(limit as string) : 1,
         });
 
-        return response.json(cities);
+        return response.json(cities).send();
     }
 }
 

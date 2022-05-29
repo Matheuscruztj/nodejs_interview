@@ -4,6 +4,7 @@ import { ICitiesRepository } from "@modules/cities/repositories/ICitiesRepositor
 import { statesList } from "../../../../modules/cities/list/StatesList";
 import { inject, injectable } from "tsyringe";
 import { AppError } from "@shared/errors/AppError";
+import { City } from "@modules/cities/infra/typeorm/entities/City";
 
 interface IRequest {
     name: string;
@@ -20,14 +21,12 @@ class CreateCityUseCase {
     async execute({
         name,
         state
-    }: IRequest): Promise<void> {
+    }: IRequest): Promise<City> {
         const stateSanitized = state.toUpperCase();
 
         if (!statesList.includes(stateSanitized))
             throw new AppError("State not allowed");
 
-        console.log(stateSanitized);
-        
         let cityAlreadyExists = await this.citiesRepository.searchByNameAndState({
             name,
             state: stateSanitized,
@@ -36,10 +35,12 @@ class CreateCityUseCase {
         if (cityAlreadyExists) 
             throw new AppError("Register already exists");
  
-        await this.citiesRepository.create({
+        const city = await this.citiesRepository.create({
             name,
             state: stateSanitized,
         });
+
+        return city;
     }
 }
 

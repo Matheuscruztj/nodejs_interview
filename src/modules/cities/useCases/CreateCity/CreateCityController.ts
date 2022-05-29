@@ -15,9 +15,9 @@ class CreateCityController {
         await createCityUseCase.execute({
             name,
             state,
-        })
+        });
 
-        return response.status(201).json();
+        return response.status(201).send();
     }
 }
 

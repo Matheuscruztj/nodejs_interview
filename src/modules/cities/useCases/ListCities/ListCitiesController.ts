@@ -8,7 +8,7 @@ class ListCitiesController {
 
         const cities = await listCitiesUseCase.execute();
 
-        return response.json(cities);
+        return response.json(cities).send();
     }
 }
 

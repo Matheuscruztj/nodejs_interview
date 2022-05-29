@@ -68,8 +68,6 @@ class CitiesRepository implements ICitiesRepository {
             }
         });
 
-        console.log(cities);
-
         if(cities.length)
             return cities[0];
     }

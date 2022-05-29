@@ -4,7 +4,7 @@ import { SearchCitiesController } from "@modules/cities/useCases/SearchCities/Se
 import { SearchCitiesByNameController } from "@modules/cities/useCases/SearchCitiesByName/SearchCitiesByNameController";
 import { SearchCitiesByStateController } from "@modules/cities/useCases/SearchCitiesByState/SearchCitiesByStateController";
 import { Router } from "express";
-import { body } from "express-validator";
+import { body, query } from "express-validator";
 
 const citiesRoutes = Router();
 
@@ -18,20 +18,39 @@ citiesRoutes.post("/",
 body("name")
     .trim()
     .isLength({ min: 2 })
-    .withMessage('City name only shoud have at least 2 characters')
+    .withMessage('City name only should have at least 2 characters')
     .isLength({ max: 255 })
-    .withMessage('City name only shoud have at maximum 55 characters'),
+    .withMessage('City name only should have at maximum 55 characters'),
 body("state")
     .trim()
     .isLength({ min: 2 })
-    .withMessage('City state only shoud have at least 2 characters')
+    .withMessage('City state only should have at least 2 characters')
     .isLength({ max: 2 })
-    .withMessage('City state only shoud have at maximum 2 characters')
+    .withMessage('City state only should have at maximum 2 characters')
 ,createCityController.handle);
 
 citiesRoutes.get("/", listCitiesController.handle);
-citiesRoutes.get("/search", searchCitiesController.handle);
-citiesRoutes.get("/searchByName", searchCitiesByNameController.handle);
-citiesRoutes.get("/searchByState", searchCitiesByStateController.handle);
+
+citiesRoutes.get("/searchByName", 
+    query("page")
+    .optional()
+    .isInt()
+        .withMessage('Page only should have to be numeric'),
+    query("limit")
+    .optional()
+    .isInt()
+        .withMessage('Page only should have to be numeric')
+,searchCitiesByNameController.handle);
+
+citiesRoutes.get("/searchByState",
+    query("page")
+        .optional()
+        .isInt()
+            .withMessage('Page only should have to be numeric'),
+    query("limit")
+    .optional()
+    .isInt()
+        .withMessage('Page only should have to be numeric')
+,searchCitiesByStateController.handle);
 
 export { citiesRoutes };
