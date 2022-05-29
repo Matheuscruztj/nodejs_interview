@@ -12,6 +12,7 @@ interface ICitiesRepository {
     searchByNameOrState(data: ISearchCitiesDTO): Promise<City[]>;
     searchByName(data: ISearchByNameDTO): Promise<City[]>;
     searchByState(data: ISearchByStateDTO): Promise<City[]>;
+    searchById(id: string): Promise<City>;
 }
 
 export { ICitiesRepository };

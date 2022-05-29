@@ -128,6 +128,10 @@ class CitiesRepository implements ICitiesRepository {
             }
         });
     }
+
+    async searchById(id: string): Promise<City> {
+        return this.repository.findOne(id);
+    }
 }
 
 export { CitiesRepository };

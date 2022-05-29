@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Customer } from "@modules/customers/infra/typeorm/entities/Customer";
+import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
 import { v4 as uuidV4 } from "uuid";
 
 @Entity("cities")
@@ -11,6 +12,9 @@ class City {
 
     @Column()
     state: string;
+
+    @OneToMany(() => Customer, customer => customer.city)
+    customers: Customer[];
 
     constructor() {
         if (!this.id) {

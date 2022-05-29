@@ -27,7 +27,7 @@ app.use(
 
         if (err instanceof RequestError) {
             return response.status(400).json({
-                message: 'Inconformidade encontrada',
+                message: 'Request data invalid',
                 list: err.list,
             });
         }

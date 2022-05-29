@@ -23,11 +23,16 @@ export class CreateCustomer1653769215045 implements MigrationInterface {
                     },
                     {
                         name: "birth_date",
-                        type: "timestamp"
+                        type: "date"
                     },
                     {
                         name: "city_id",
                         type: "uuid"
+                    },
+                    {
+                        name: "created_at",
+                        type: "timestamp",
+                        default: "now()"
                     }
                 ],
                 foreignKeys: [

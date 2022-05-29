@@ -31,7 +31,11 @@ body("state")
 
 citiesRoutes.get("/", listCitiesController.handle);
 
-citiesRoutes.get("/searchByName", 
+citiesRoutes.get("/searchByName",
+    query("value")
+    .trim()
+    .notEmpty()
+        .withMessage('Value should not be empty'),
     query("page")
     .optional()
     .isInt()
@@ -43,6 +47,10 @@ citiesRoutes.get("/searchByName",
 ,searchCitiesByNameController.handle);
 
 citiesRoutes.get("/searchByState",
+    query("value")
+    .trim()
+    .notEmpty()
+        .withMessage('Value should not be empty'),
     query("page")
         .optional()
         .isInt()
