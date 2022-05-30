@@ -7,7 +7,7 @@ import { inject, injectable } from "tsyringe";
 class SearchCustomersByNameUseCase {
     constructor(
         @inject("CustomersRepository")
-        private customersRepository: ICustomersRepository
+        private customersRepository: ICustomersRepository,
     ) {}
 
     async execute({

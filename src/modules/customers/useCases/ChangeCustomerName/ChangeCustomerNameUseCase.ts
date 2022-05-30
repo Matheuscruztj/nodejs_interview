@@ -36,7 +36,13 @@ class ChangeCustomerNameUseCase {
         if (newCustomerAlreadyExists)
             throw new AppError("Name not available");
 
-        const customerWithNewName = await this.customersRepository.updateNameById(name, id);
+        const customerWithNewName = await this.customersRepository.create({
+            id: customer.id,
+            name,
+            gender: customer.gender,
+            birth_date: customer.birthDate,
+            city_id: customer.cityId
+        });
 
         return customerWithNewName;
     }

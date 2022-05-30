@@ -4,6 +4,10 @@ import { ISearchByNameDTO } from "@modules/customers/dto/ISearchByNameDTO";
 import { ICustomersRepository } from "@modules/customers/repositories/ICustomersRepository";
 import { getRepository, Repository } from "typeorm";
 import { Customer } from "../entities/Customer";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 class CustomersRepository implements ICustomersRepository {
     private repository: Repository<Customer>;
@@ -12,25 +16,40 @@ class CustomersRepository implements ICustomersRepository {
         this.repository = getRepository(Customer);
     }
 
+    calculateAge(customer: Customer) {
+        const currentDate = dayjs().toDate();
 
+        customer.age = dayjs(currentDate).diff(customer.birthDate, "years");
+    }
+    
     async create({
+        id,
         name,
         gender,
         birth_date,
         city_id,
     }: ICreateCustomerDTO): Promise<Customer> {
-        const customer = await this.repository.create({
+        let customer = await this.repository.create({
+            id,
             name,
             gender,
             birthDate: birth_date,
             cityId: city_id,
         });
 
+        this.calculateAge(customer);
+
         return this.repository.save(customer);
     }
 
     async searchById(id: string): Promise<Customer> {
-        return this.repository.findOne(id);
+        let customer = await this.repository.findOne(id, {
+            relations: ['city']
+        });
+
+        this.calculateAge(customer);
+
+        return customer;
     }
 
     async searchByName({
@@ -40,7 +59,8 @@ class CustomersRepository implements ICustomersRepository {
     }: ISearchByNameDTO): Promise<Customer[]> {
         const nameSanitized = name ? `%${name.toString().toLowerCase()}%` : null;
 
-        const customers = await this.repository.createQueryBuilder('customers')
+        let customers = await this.repository.createQueryBuilder('customers')
+            .innerJoinAndSelect("customers.city", "city")
             .where("LOWER(customers.name) like :name", {
                 name: `%${nameSanitized}%`,
             })
@@ -48,6 +68,10 @@ class CustomersRepository implements ICustomersRepository {
             .limit(limit)
             .offset((page - 1) * limit)
             .getMany();
+        
+        customers.forEach(customer => {
+            this.calculateAge(customer);
+        });
 
         return customers;
     }
@@ -83,7 +107,11 @@ class CustomersRepository implements ICustomersRepository {
             id
           }).execute();
 
-        return await this.repository.findOne(id);
+        let customer = await this.repository.findOne(id);
+
+        this.calculateAge(customer);
+
+        return customer;
     }
 
     async deleteById(id: string): Promise<void> {

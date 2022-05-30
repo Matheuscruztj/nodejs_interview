@@ -39,19 +39,43 @@ class InMemoryCitiesRepository implements ICitiesRepository {
             return citiesMatched[0];
     }
 
-    searchAll(): Promise<City[]> {
-        throw new Error("Method not implemented.");
+    async searchAll(): Promise<City[]> {
+        return this.cities;
     }
 
-    searchByNameOrState(data: ISearchCitiesDTO): Promise<City[]> {
-        throw new Error("Method not implemented.");
+    async searchByNameOrState({
+        name,
+        state,
+    }: ISearchCitiesDTO): Promise<City[]> {
+        return this.cities.filter(city => {
+            if (city.name === name || city.state === state)
+                return city;
+        });
     }
 
-    searchByName(data: ISearchByNameDTO): Promise<City[]> {
-        throw new Error("Method not implemented.");
+    async searchByName({
+        name
+    }: ISearchByNameDTO): Promise<City[]> {
+        return this.cities.filter(city => {
+            if (city.name === name)
+                return city;
+        });
     }
-    searchByState(data: ISearchByStateDTO): Promise<City[]> {
-        throw new Error("Method not implemented.");
+
+    async searchByState({
+        state
+    }: ISearchByStateDTO): Promise<City[]> {
+        return this.cities.filter(city => {
+            if (city.state === state)
+                return city;
+        });
+    }
+
+    async searchById(id: string): Promise<City> {
+        return this.cities.find(city => {
+            if (city.id === id)
+                return city.customers;
+        })
     }
 }
 

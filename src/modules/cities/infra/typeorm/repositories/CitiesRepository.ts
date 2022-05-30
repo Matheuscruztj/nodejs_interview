@@ -80,10 +80,7 @@ class CitiesRepository implements ICitiesRepository {
         const nameSanitized = name ? `%${name.toString().toLowerCase()}%` : null;
 
         const cities = await this.repository.createQueryBuilder('cities')
-            .select([
-                "cities.name",
-                "cities.state"
-            ])
+            .innerJoinAndSelect("cities.customers", "customers")
             .where("LOWER(cities.name) like :name", {
                 name: `%${nameSanitized}%`,
             })
@@ -104,10 +101,7 @@ class CitiesRepository implements ICitiesRepository {
         const stateSanitized = state ? `%${state.toString().toLowerCase()}%` : null;
 
         const cities = await this.repository.createQueryBuilder('cities')
-            .select([
-                "cities.name",
-                "cities.state"
-            ])
+            .innerJoinAndSelect("cities.customers", "customers")
             .where("LOWER(cities.state) like :state", {
                 state: `%${stateSanitized}%`,
             })

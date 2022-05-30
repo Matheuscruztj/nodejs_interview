@@ -27,4 +27,29 @@ describe("Create User Controller", () => {
 
     expect(response.status).toBe(201);
   });
+
+  it("should not be able to create a new city with invalid state", async () => {
+    const response = await request(app).post("/cities").send({
+      name: "Lora Gibbs",
+      state: "CA",
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body.message).toEqual("State not allowed");
+  });
+
+  it("should not be able to create a new city if there is a already existing city", async () => {
+    await request(app).post("/cities").send({
+      name: "Shawn Wallace",
+      state: "CE",
+    });
+
+    const response = await request(app).post("/cities").send({
+      name: "Shawn Wallace",
+      state: "CE",
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body.message).toEqual("Register already exists");
+  });
 });

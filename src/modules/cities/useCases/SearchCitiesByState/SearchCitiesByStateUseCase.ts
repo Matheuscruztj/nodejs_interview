@@ -21,7 +21,7 @@ class SearchCitiesByStateUseCase {
         if (!state)
             throw new AppError("State invalid");
 
-        if (!statesList.includes(state))
+        if (!statesList.includes(state.toLocaleUpperCase()))
             throw new AppError("State not allowed");
 
         const cities = await this.citiesRepository.searchByState({
