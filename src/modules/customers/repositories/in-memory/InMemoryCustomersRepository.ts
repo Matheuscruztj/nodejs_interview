@@ -19,7 +19,6 @@ class InMemoryCustomersRepository implements ICustomersRepository {
     }
 
     async create({
-        id,
         name,
         gender,
         birth_date,
@@ -27,8 +26,7 @@ class InMemoryCustomersRepository implements ICustomersRepository {
     }: ICreateCustomerDTO): Promise<Customer> {
         const customer = new Customer();
 
-        Object.assign(customer, {
-            id,
+        await Object.assign(customer, {
             name,
             gender,
             birthDate: birth_date,
@@ -46,7 +44,8 @@ class InMemoryCustomersRepository implements ICustomersRepository {
                 return customer;
         });
 
-        this.calculateAge(customer);
+        if (customer)
+            this.calculateAge(customer);
 
         return customer;
     }
@@ -54,26 +53,29 @@ class InMemoryCustomersRepository implements ICustomersRepository {
     async searchByName({
         name,
     }: ISearchByNameDTO): Promise<Customer[]> {
-        let customer = await this.customers.find(customer => {
+        let customers = await this.customers.filter(customer => {
             if (customer.name === name)
                 return customer;
         });
 
-        this.calculateAge(customer);
+        customers.forEach(customer => {
+            this.calculateAge(customer);
+        });
 
-        return customer;
+        return customers;
     }
 
-    searchByNameAndBirthDateAndCityId({
+    async searchByNameAndBirthDateAndCityId({
         name,
         birth_date,
         city_id
     }: ISearchByNameAndBirthDateAndCityIdDTO): Promise<Customer> {
-        const nameSanitized = name ? `%${name.toString().toLowerCase()}%` : null;
-
-        const customers = await this.customers.filter(customer => {
-            if (customer.name === name && customer.birthDate === birth_date && customer.cityId === city_id)
+        const customer = await this.customers.find(customer => {
+            if (customer.name.toLocaleLowerCase() === name.toString().toLowerCase() 
+                && customer.birthDate.toISOString() == birth_date.toISOString() 
+                && customer.cityId === city_id) {
                 return customer;
+            }
         });
 
         return customer;
@@ -85,9 +87,9 @@ class InMemoryCustomersRepository implements ICustomersRepository {
                 return customer;
         });
 
-        await this.customers[index].name = name;
+        this.customers[index].name = name;
 
-        return await this.customers[index];
+        return this.customers[index];
     }
 
     async deleteById(id: string): Promise<void> {
@@ -96,6 +98,8 @@ class InMemoryCustomersRepository implements ICustomersRepository {
                 return customer;
         });
 
-        await this.customers.slice(1, 1);
+        await this.customers.slice(index, 1);
     }
 }
+
+export { InMemoryCustomersRepository };

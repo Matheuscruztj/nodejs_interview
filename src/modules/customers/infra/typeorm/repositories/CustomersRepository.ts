@@ -23,14 +23,12 @@ class CustomersRepository implements ICustomersRepository {
     }
     
     async create({
-        id,
         name,
         gender,
         birth_date,
         city_id,
     }: ICreateCustomerDTO): Promise<Customer> {
         let customer = await this.repository.create({
-            id,
             name,
             gender,
             birthDate: birth_date,
@@ -47,7 +45,8 @@ class CustomersRepository implements ICustomersRepository {
             relations: ['city']
         });
 
-        this.calculateAge(customer);
+        if (customer)
+            this.calculateAge(customer);
 
         return customer;
     }
@@ -57,12 +56,10 @@ class CustomersRepository implements ICustomersRepository {
         page,
         limit
     }: ISearchByNameDTO): Promise<Customer[]> {
-        const nameSanitized = name ? `%${name.toString().toLowerCase()}%` : null;
-
         let customers = await this.repository.createQueryBuilder('customers')
-            .innerJoinAndSelect("customers.city", "city")
+            .leftJoinAndSelect("customers.city", "city")
             .where("LOWER(customers.name) like :name", {
-                name: `%${nameSanitized}%`,
+                name: `%${name.toString().toLowerCase()}%`,
             })
             .orderBy("customers.created_at", "ASC")
             .limit(limit)
@@ -81,14 +78,13 @@ class CustomersRepository implements ICustomersRepository {
         birth_date,
         city_id
     }: ISearchByNameAndBirthDateAndCityIdDTO): Promise<Customer> {
-        const nameSanitized = name ? `%${name.toString().toLowerCase()}%` : null;
-
         const customers = await this.repository.createQueryBuilder('customers')
             .where("LOWER(customers.name) like :name", {
-                name: `%${nameSanitized}%`,
+                name: `%${name.toString().toLowerCase()}%`,
             })
-            .andWhere("customers.birth_date = :date", {
-                date: birth_date,
+            .andWhere("customers.birth_date between :start_date and :end_date", {
+                start_date: birth_date.toISOString(),
+                end_date: birth_date.toISOString(),
             })
             .andWhere("customers.city_id = :city_id", {
                 city_id,

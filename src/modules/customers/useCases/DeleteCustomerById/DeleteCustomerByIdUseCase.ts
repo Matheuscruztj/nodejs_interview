@@ -11,7 +11,7 @@ class DeleteCustomerByIdUseCase {
         private customersRepository: ICustomersRepository
     ) {}
 
-    async execute(id: string): Promise<Customer> {
+    async execute(id: string): Promise<void> {
         if(!validate(id))
             throw new AppError("Invalid id");
 
@@ -21,8 +21,6 @@ class DeleteCustomerByIdUseCase {
             throw new AppError("Customer not exists");
         
         await this.customersRepository.deleteById(id);
-
-        return customer;
     }
 }
 

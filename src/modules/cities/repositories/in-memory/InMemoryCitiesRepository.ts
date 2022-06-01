@@ -47,7 +47,7 @@ class InMemoryCitiesRepository implements ICitiesRepository {
         name,
         state,
     }: ISearchCitiesDTO): Promise<City[]> {
-        return this.cities.filter(city => {
+        return await this.cities.filter(city => {
             if (city.name === name || city.state === state)
                 return city;
         });
@@ -56,7 +56,7 @@ class InMemoryCitiesRepository implements ICitiesRepository {
     async searchByName({
         name
     }: ISearchByNameDTO): Promise<City[]> {
-        return this.cities.filter(city => {
+        return await this.cities.filter(city => {
             if (city.name === name)
                 return city;
         });
@@ -65,16 +65,16 @@ class InMemoryCitiesRepository implements ICitiesRepository {
     async searchByState({
         state
     }: ISearchByStateDTO): Promise<City[]> {
-        return this.cities.filter(city => {
+        return await this.cities.filter(city => {
             if (city.state === state)
                 return city;
         });
     }
 
     async searchById(id: string): Promise<City> {
-        return this.cities.find(city => {
+        return await this.cities.find(city => {
             if (city.id === id)
-                return city.customers;
+                return city;
         })
     }
 }

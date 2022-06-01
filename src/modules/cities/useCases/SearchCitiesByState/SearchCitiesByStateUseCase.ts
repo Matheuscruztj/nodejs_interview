@@ -19,7 +19,7 @@ class SearchCitiesByStateUseCase {
         limit = 10
     }: ISearchByStateDTO): Promise<City[]> {
         if (!state)
-            throw new AppError("State invalid");
+            throw new AppError("Value should not be empty");
 
         if (!statesList.includes(state.toLocaleUpperCase()))
             throw new AppError("State not allowed");

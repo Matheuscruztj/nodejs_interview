@@ -5,6 +5,8 @@ import { DeleteCustomerByIdUseCase } from "./DeleteCustomerByIdUseCase";
 
 class DeleteCustomerByIdController {
     async handle(request: Request, response: Response): Promise<Response> {
+        checkRequestParams(request, response);
+        
         const { id } = request.params;
 
         const deleteCustomerByIdUseCase = container.resolve(DeleteCustomerByIdUseCase);

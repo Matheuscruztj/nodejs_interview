@@ -25,7 +25,7 @@ class ChangeCustomerNameUseCase {
             throw new AppError("Customer not exists");
 
         if (customer.name === name)
-            throw new AppError("Name is the same already");
+            throw new AppError("Name is already the same");
 
         const newCustomerAlreadyExists = await this.customersRepository.searchByNameAndBirthDateAndCityId({
             name,
@@ -34,15 +34,9 @@ class ChangeCustomerNameUseCase {
         });
 
         if (newCustomerAlreadyExists)
-            throw new AppError("Name not available");
+            throw new AppError("Name is not available");
 
-        const customerWithNewName = await this.customersRepository.create({
-            id: customer.id,
-            name,
-            gender: customer.gender,
-            birth_date: customer.birthDate,
-            city_id: customer.cityId
-        });
+        const customerWithNewName = await this.customersRepository.updateNameById(name, customer.id);
 
         return customerWithNewName;
     }

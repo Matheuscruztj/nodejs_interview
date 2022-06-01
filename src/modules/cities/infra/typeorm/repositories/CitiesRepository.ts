@@ -4,7 +4,7 @@ import { ISearchByNameDTO } from "@modules/cities/dto/ISearchByNameDTO";
 import { ISearchByStateDTO } from "@modules/cities/dto/ISearchByStateDTO";
 import { ISearchCitiesDTO } from "@modules/cities/dto/ISearchCitiesDTO";
 import { ICitiesRepository } from "@modules/cities/repositories/ICitiesRepository";
-import { getRepository, Like, Repository } from "typeorm";
+import { getRepository, Repository } from "typeorm";
 import { City } from "../entities/City";
 
 class CitiesRepository implements ICitiesRepository {
@@ -43,10 +43,10 @@ class CitiesRepository implements ICitiesRepository {
                 "cities.state"
             ])
             .where("LOWER(cities.name) like :name", {
-                name: `%${nameSanitized}%`,
+                name: `${nameSanitized}`,
             })
             .orWhere("LOWER(cities.state) like :state", {
-                state: `%${stateSanitized}%`,
+                state: `${stateSanitized}`,
             })
             .orderBy("cities.state", "ASC")
             .orderBy("cities.name", "ASC")
@@ -77,12 +77,10 @@ class CitiesRepository implements ICitiesRepository {
         page,
         limit,
     }: ISearchByNameDTO): Promise<City[]> {
-        const nameSanitized = name ? `%${name.toString().toLowerCase()}%` : null;
-
         const cities = await this.repository.createQueryBuilder('cities')
-            .innerJoinAndSelect("cities.customers", "customers")
+            .leftJoinAndSelect("cities.customers", "customers")
             .where("LOWER(cities.name) like :name", {
-                name: `%${nameSanitized}%`,
+                name: `%${name.toString().toLowerCase()}%`,
             })
             .orderBy("cities.state", "ASC")
             .orderBy("cities.name", "ASC")
@@ -98,12 +96,10 @@ class CitiesRepository implements ICitiesRepository {
         page,
         limit,
     }: ISearchByStateDTO): Promise<City[]> {
-        const stateSanitized = state ? `%${state.toString().toLowerCase()}%` : null;
-
         const cities = await this.repository.createQueryBuilder('cities')
-            .innerJoinAndSelect("cities.customers", "customers")
+            .leftJoinAndSelect("cities.customers", "customers")
             .where("LOWER(cities.state) like :state", {
-                state: `%${stateSanitized}%`,
+                state: `%${state.toString().toLowerCase()}%`,
             })
             .orderBy("cities.state", "ASC")
             .orderBy("cities.name", "ASC")

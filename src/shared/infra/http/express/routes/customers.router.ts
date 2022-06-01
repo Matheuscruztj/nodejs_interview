@@ -41,7 +41,7 @@ query("page")
 query("limit")
 .optional()
 .isInt()
-    .withMessage('Page only should have to be numeric')
+    .withMessage('Limit only should have to be numeric')
 ,searchCustomersByNameController.handle)
 
 customersRoutes.delete("/:id", deleteCustomerByIdController.handle);

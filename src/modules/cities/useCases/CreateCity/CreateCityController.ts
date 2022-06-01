@@ -12,12 +12,12 @@ class CreateCityController {
 
         const createCityUseCase = container.resolve(CreateCityUseCase);
 
-        await createCityUseCase.execute({
+        const city = await createCityUseCase.execute({
             name,
             state,
         });
 
-        return response.status(201).send();
+        return response.status(201).send(city);
     }
 }
 

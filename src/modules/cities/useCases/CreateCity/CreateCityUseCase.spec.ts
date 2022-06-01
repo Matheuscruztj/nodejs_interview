@@ -11,7 +11,7 @@ describe("Create city", () => {
         createCityUseCase = new CreateCityUseCase(inMemoryCitiesRepository);
     });
 
-    it("shoud be able to create a city", async () => {
+    it("should be able to create a city", async () => {
         const user = await createCityUseCase.execute({
             name: "Franklin Aguilar",
             state: "CE"

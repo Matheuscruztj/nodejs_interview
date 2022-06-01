@@ -25,9 +25,6 @@ export function checkRequestParams (request: Request, response: Response) {
             if(error.param)
                 message += ` Parameter '${error.param}'`;
             
-            if(error.value)
-                message += ` with current value '${error.value}'`;
-
             if(error.location)
                 message += ` located on '${error.location}'`;
 

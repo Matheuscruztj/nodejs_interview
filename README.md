@@ -67,7 +67,6 @@ yarn run typeorm migration:run
 ## Revert migration
 yarn run typeorm migration:revert
 
-
 ## Before run tests, run the creation of testing database, the command is below:
 ## Run to create database for testing -> interview_test
 yarn run create_db_test
