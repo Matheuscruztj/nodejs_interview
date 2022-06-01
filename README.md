@@ -61,6 +61,9 @@ Dicas:
 ## Install all dependencies
 yarn -i
 
+## Build the docker (infra) - it is necessary port 5432 should be open by default
+docker-compose up -d --build
+
 ## Run migration
 yarn run typeorm migration:run
 
