@@ -1,10 +1,10 @@
 {
     "type": "postgres",
-    "port": 5432,
+    "port": 54321,
     "host": "localhost",
-    "username": "docker",
-    "password": "docker",
-    "database": "interview",
+    "username": "root",
+    "password": "toor",
+    "database": "leadmove",
     "migrations": ["./src/shared/infra/typeorm/migrations/*.ts"],
     "entities": ["./src/modules/**/entities/*.ts"],
     "cli": {

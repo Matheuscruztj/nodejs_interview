@@ -6,11 +6,11 @@ services:
     container_name: database
     restart: always
     ports:
-      - 5432:5432
+      - 54321:5432
     environment:
-      - POSTGRES_USER=docker
-      - POSTGRES_PASSWORD=docker
-      - POSTGRES_DB=interview
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=toor
+      - POSTGRES_DB=leadmove
     volumes:
       - C:\\folder:/var/lib/postgresql/data
   # app:

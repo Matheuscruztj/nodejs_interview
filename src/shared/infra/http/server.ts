@@ -1,3 +1,11 @@
-import { app } from "./express/app";
+import { env } from "@env/index"
+import { app } from "./fastify/app"
 
-app.listen(3333, () => console.log("Server is running on port 3333!"));
+app
+  .listen({
+    host: '0.0.0.0',
+    port: env.PORT,
+  })
+  .then(() => {
+    console.log(`🚀 HTTP Server Running on ${env.PORT}`)
+  })
